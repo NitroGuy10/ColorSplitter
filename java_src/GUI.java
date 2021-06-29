@@ -186,7 +186,11 @@ public class GUI implements ActionListener
 		{
 			if (ColorSplitter.inputFolder == null || ColorSplitter.outputFolder == null)
 			{
-				JOptionPane.showMessageDialog(frame, "Choose a folder, dingus.", "SMH my head", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(frame, "Please select and input and output folder", "Whoops!", JOptionPane.ERROR_MESSAGE);
+			}
+			else if (ColorSplitter.inputFolder.equals(ColorSplitter.outputFolder))
+			{
+				JOptionPane.showMessageDialog(frame, "The input and output folders cannot be the same", "Whoops!", JOptionPane.ERROR_MESSAGE);
 			}
 			else
 			{

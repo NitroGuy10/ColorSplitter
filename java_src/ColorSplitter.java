@@ -55,11 +55,11 @@ public class ColorSplitter
 				{
 					if (originalName.matches(".*_[0-9]+.*"))
 					{
-						ImageIO.write(splitImage, "png", new File(outputFolder.getAbsolutePath() + "/" + originalName.substring(0, originalName.lastIndexOf("_")) + setting.getName() + originalName.substring(originalName.lastIndexOf("_"))));
+						ImageIO.write(splitImage, originalName.substring(originalName.lastIndexOf(".") + 1), new File(outputFolder.getAbsolutePath() + "/" + originalName.substring(0, originalName.lastIndexOf("_")) + setting.getName() + originalName.substring(originalName.lastIndexOf("_"))));
 					}
 					else
 					{
-						ImageIO.write(splitImage, "png", new File(outputFolder.getAbsolutePath() + "/" + originalName + setting.getName()));
+						ImageIO.write(splitImage, originalName.substring(originalName.lastIndexOf(".") + 1), new File(outputFolder.getAbsolutePath() + "/" + originalName.substring(0, originalName.lastIndexOf(".")) + setting.getName() + originalName.substring(originalName.lastIndexOf("."))));
 					}
 				}
 				catch (IOException e)

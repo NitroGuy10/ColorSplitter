@@ -44,7 +44,7 @@ class SplitSetting extends JPanel implements ActionListener
 
 	public SplitSetting (GUI gui)
 	{
-		this("", Color.BLACK, gui);
+		this("name", Color.BLACK, gui);
 	}
 
 	@Override
