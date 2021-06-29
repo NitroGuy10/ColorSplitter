@@ -5,6 +5,8 @@ void setup ()
 {
   size(100, 100);
   frameRate(1);
+  surface.setVisible(false);
+  noLoop();
   
   gui = new GUI();
   while (!ready)

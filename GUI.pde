@@ -28,64 +28,85 @@ public class GUI implements ActionListener
       
     }
     
-    JFrame frame = new JFrame("ColorSplitter");
-    frame.setSize(900, 150);
+    
+    JFrame frame = new JFrame("NitroGuy's ColorSplitter");
+    frame.setSize(700, 500);
+    frame.setPreferredSize(frame.getSize());
 
-    JPanel panel = new JPanel();
+    JPanel panel = new JPanel(new BorderLayout());
 
+    JPanel topPanel = new JPanel(new FlowLayout());
+    
     JButton inputButton = new JButton("Choose Input Folder");
     inputButton.setActionCommand("choose input folder");
     inputButton.addActionListener(this);
-    panel.add(inputButton);
+    topPanel.add(inputButton);
     
     inputLabel = new JLabel("No folder chosen");
-    panel.add(inputLabel);
+    topPanel.add(inputLabel);
     
+    panel.add(topPanel, BorderLayout.NORTH);
+    
+    JPanel centerPanel = new JPanel(new GridLayout(20, 1));
+    JScrollPane scrollPane = new JScrollPane(centerPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    scrollPane.getVerticalScrollBar().setUnitIncrement(5);
     
     JButton primaryButton = new JButton("Choose Primary Color");
     primaryButton.setActionCommand("choose primary");
     primaryButton.addActionListener(this);
-    panel.add(primaryButton);
+    centerPanel.add(primaryButton);
     
     primaryLabel = new JLabel("\u2588\u2588\u2588\u2588\u2588");
-    panel.add(primaryLabel);
+    centerPanel.add(primaryLabel);
     
     
     JButton secondaryButton = new JButton("Choose Secondary Color");
     secondaryButton.setActionCommand("choose secondary");
     secondaryButton.addActionListener(this);
-    panel.add(secondaryButton);
+    centerPanel.add(secondaryButton);
     
     secondaryLabel = new JLabel("\u2588\u2588\u2588\u2588\u2588");
-    panel.add(secondaryLabel);
+    centerPanel.add(secondaryLabel);
 
 
     JButton outlineButton = new JButton("Choose Outline Color");
     outlineButton.setActionCommand("choose outline");
     outlineButton.addActionListener(this);
-    panel.add(outlineButton);
+    centerPanel.add(outlineButton);
     
     outlineLabel = new JLabel("\u2588\u2588\u2588\u2588\u2588");
-    panel.add(outlineLabel);
+    centerPanel.add(outlineLabel);
+    
+    panel.add(scrollPane, BorderLayout.CENTER);
 
+    
+    JPanel bottomPanel = new JPanel();
     
     JButton outputButton = new JButton("Choose Output Folder");
     outputButton.setActionCommand("choose output folder");
     outputButton.addActionListener(this);
-    panel.add(outputButton);
+    bottomPanel.add(outputButton);
     
     outputLabel = new JLabel("No folder chosen");
-    panel.add(outputLabel);
+    bottomPanel.add(outputLabel);
     
     
     JButton doitButton = new JButton("DO IT!!!!!!!!!");
     doitButton.setBackground(Color.red);
     doitButton.setActionCommand("do it");
     doitButton.addActionListener(this);
-    panel.add(doitButton);
+    bottomPanel.add(doitButton);
+    
+    /*
+    JLabel siteLabel = new JLabel("<html><a href=\"https://nitroguy10.github.io/\">website</a></html>");
+    bottomPanel.add(siteLabel);
+    */
+    
+    panel.add(bottomPanel, BorderLayout.SOUTH);
 
 
     frame.add(panel);
+    //frame.pack();
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.setVisible(true);
 
@@ -110,6 +131,10 @@ public class GUI implements ActionListener
     else if (e.getActionCommand().equals("choose input folder"))
     {
       JFileChooser fileChooser = new JFileChooser();
+      if (inputFolder != null)
+      {
+        fileChooser.setCurrentDirectory(inputFolder);
+      }
       fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
       int option = fileChooser.showOpenDialog(frame);
       if (option == JFileChooser.APPROVE_OPTION)
@@ -121,6 +146,10 @@ public class GUI implements ActionListener
     else if (e.getActionCommand().equals("choose output folder"))
     {
       JFileChooser fileChooser = new JFileChooser();
+      if (outputFolder != null)
+      {
+        fileChooser.setCurrentDirectory(outputFolder);
+      }
       fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
       int option = fileChooser.showSaveDialog(frame);
       if (option == JFileChooser.APPROVE_OPTION)
