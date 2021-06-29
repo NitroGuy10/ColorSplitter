@@ -19,7 +19,7 @@ class SplitSetting extends JPanel implements ActionListener
     this.add(chooseColorButton);
     
     colorLabel = new JLabel("\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588");
-    colorLabel.setBackground(chosenColor);
+    colorLabel.setForeground(chosenColor);
     this.add(colorLabel);
     
     JButton removeButton = new JButton("Remove");
@@ -59,5 +59,10 @@ class SplitSetting extends JPanel implements ActionListener
   public String getName ()
   {
     return textField.getText();
+  }
+  
+  public String toConfig ()
+  {
+    return chosenColor.getRed() + " " +  chosenColor.getGreen() + " " +  chosenColor.getBlue() + " " +  chosenColor.getAlpha() + " " + getName();
   }
 }

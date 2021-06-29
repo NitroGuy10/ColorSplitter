@@ -54,7 +54,7 @@ void doit ()
     }
   }
 
-  JOptionPane.showMessageDialog(frame, "DOOONNNEEEE!!!!1!!!11!!", "omgomgomgomg", JOptionPane.INFORMATION_MESSAGE);
+  JOptionPane.showMessageDialog(frame, "All Done!", "Hooray!", JOptionPane.INFORMATION_MESSAGE);
 }
 
 boolean colorColorEquals (color c1, Color c2)

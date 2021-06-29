@@ -4,6 +4,8 @@ import java.awt.event.*;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.net.URI;
+import java.util.prefs.Preferences;
+import java.util.Scanner;
 
 public class GUI implements ActionListener
 {
@@ -98,7 +100,7 @@ public class GUI implements ActionListener
     
     fileMenu.addSeparator();
     
-    JMenuItem loadMenuItem = new JMenuItem("Load Preset");
+    JMenuItem loadMenuItem = new JMenuItem("Load Preset...");
     loadMenuItem.setActionCommand("load");
     loadMenuItem.addActionListener(this);
     fileMenu.add(loadMenuItem);
@@ -108,9 +110,26 @@ public class GUI implements ActionListener
     saveMenuItem.addActionListener(this);
     fileMenu.add(saveMenuItem);
     
+    JMenuItem deleteMenuItem = new JMenuItem("Delete Preset...");
+    deleteMenuItem.setActionCommand("delete");
+    deleteMenuItem.addActionListener(this);
+    fileMenu.add(deleteMenuItem);
+    
     fileMenu.addSeparator();
     
-    JMenuItem defaultMenuItem = new JMenuItem("Set Preset As Default...");
+    JMenuItem importMenuItem = new JMenuItem("Import Preset...");
+    importMenuItem.setActionCommand("import");
+    importMenuItem.addActionListener(this);
+    fileMenu.add(importMenuItem);
+    
+    JMenuItem exportMenuItem = new JMenuItem("Export Preset...");
+    exportMenuItem.setActionCommand("export");
+    exportMenuItem.addActionListener(this);
+    fileMenu.add(exportMenuItem);
+    
+    fileMenu.addSeparator();
+    
+    JMenuItem defaultMenuItem = new JMenuItem("Set Current State As Default");
     defaultMenuItem.setActionCommand("set default");
     defaultMenuItem.addActionListener(this);
     fileMenu.add(defaultMenuItem);
@@ -136,6 +155,9 @@ public class GUI implements ActionListener
     frame.pack();
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.setVisible(true);
+    
+    Preferences prefs = Preferences.userNodeForPackage(ColorSplitter.class);
+    loadPreset(prefs.get("(default)", ""));
 
     ready = true;
   }
@@ -151,7 +173,7 @@ public class GUI implements ActionListener
       }
       else
       {
-        JOptionPane.showMessageDialog(frame, "Doing it!!!!!! :DDDDD", "Lesss gooooo", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(frame, "Color splitting in progress! Now wait for the \"done\" message. :)", "Doing it!", JOptionPane.INFORMATION_MESSAGE);
         doit();
       }
     }
@@ -203,19 +225,126 @@ public class GUI implements ActionListener
     }
     else if (e.getActionCommand().equals("readme"))
     {
-      try {
-         
+      try
+      {
         Desktop.getDesktop().browse(new URI("https://github.com/NitroGuy10/ColorSplitter#readme"));
       }
       catch (Exception ex) {}
     }
     else if (e.getActionCommand().equals("site"))
     {
-      try {
-         
+      try
+      {
         Desktop.getDesktop().browse(new URI("https://nitroguy10.github.io/"));
       }
       catch (Exception ex) {}
+    }
+    else if (e.getActionCommand().equals("save"))
+    {
+      String presetName = (String) JOptionPane.showInputDialog(frame, "Choose Preset Name", "Save Preset As...", JOptionPane.PLAIN_MESSAGE);
+      if (presetName != null)
+      {
+        String saveString = "";
+        for (SplitSetting setting : splits)
+        {
+          saveString += setting.toConfig() + "\n";
+        }
+        Preferences prefs = Preferences.userNodeForPackage(ColorSplitter.class);
+        prefs.put(presetName, saveString);
+      }
+    }
+    else if (e.getActionCommand().equals("load"))
+    {
+      Preferences prefs = Preferences.userNodeForPackage(ColorSplitter.class);
+      String presetName = "";
+      try
+      {
+        presetName = (String) JOptionPane.showInputDialog(frame, "Choose Preset", "Load Preset...", JOptionPane.PLAIN_MESSAGE, null, prefs.keys(), "");
+      }
+      catch (Exception ex)
+      {
+        
+      }
+      if (presetName != null)
+      {
+        loadPreset(prefs.get(presetName, ""));
+      }
+    }
+    else if (e.getActionCommand().equals("delete"))
+    {
+      Preferences prefs = Preferences.userNodeForPackage(ColorSplitter.class);
+      String presetName = "";
+      try
+      {
+        presetName = (String) JOptionPane.showInputDialog(frame, "Choose Preset", "Delete Preset...", JOptionPane.PLAIN_MESSAGE, null, prefs.keys(), "");
+      }
+      catch (Exception ex)
+      {
+        
+      }
+      if (presetName != null)
+      {
+        prefs.remove(presetName);
+      }
+    }
+    else if (e.getActionCommand().equals("export"))
+    {
+      String saveString = "";
+      for (SplitSetting setting : splits)
+      {
+        saveString += setting.toConfig() + "\n";
+      }
+      
+      JFileChooser fileChooser = new JFileChooser();
+      int option = fileChooser.showSaveDialog(frame);
+      if (option == JFileChooser.APPROVE_OPTION)
+      {
+        try
+        {
+          File presetFile = fileChooser.getSelectedFile();
+          presetFile = new File(presetFile.getAbsolutePath() + ".cspreset");
+          PrintWriter writer = new PrintWriter(presetFile);
+          writer.write(saveString);
+          writer.close();
+        }
+        catch (Exception ex)
+        {
+          JOptionPane.showMessageDialog(frame, "Error exporting preset", "Darn", JOptionPane.ERROR_MESSAGE);
+        }
+      }
+    }
+    else if (e.getActionCommand().equals("import"))
+    {
+      JFileChooser fileChooser = new JFileChooser();
+      int option = fileChooser.showOpenDialog(frame);
+      if (option == JFileChooser.APPROVE_OPTION)
+      {
+        try
+        {
+          String config = "";
+          Scanner reader = new Scanner(fileChooser.getSelectedFile());
+          while (reader.hasNextLine())
+          {
+            config += reader.nextLine() + "\n";
+          }
+          reader.close();
+          loadPreset(config);
+        }
+        catch (IOException ex)
+        {
+          JOptionPane.showMessageDialog(frame, "Error reading file", "Darn", JOptionPane.ERROR_MESSAGE);
+        }
+      }
+    }
+    else if (e.getActionCommand().equals("set default"))
+    {
+      String saveString = "";
+      for (SplitSetting setting : splits)
+      {
+        saveString += setting.toConfig() + "\n";
+      }
+      Preferences prefs = Preferences.userNodeForPackage(ColorSplitter.class);
+      prefs.put("(default)", saveString);
     }
   }
   
@@ -244,5 +373,39 @@ public class GUI implements ActionListener
     splits.clear();
     newSplitButton.revalidate();
     centerPanel.revalidate();
+  }
+  
+  public void loadPreset (String config)
+  {
+    clearSettings();
+    try
+    {
+      for (String setting : config.split("\n"))
+      {
+        if (!setting.isEmpty())
+        {
+          centerPanel.remove(newSplitButton);
+          Scanner reader = new Scanner(setting);
+          
+          Color newColor = new Color(reader.nextInt(), reader.nextInt(), reader.nextInt(), reader.nextInt());
+          
+          SplitSetting newSplit = new SplitSetting(reader.nextLine().substring(1), newColor);
+          splits.add(newSplit);
+          centerPanel.add(newSplit);
+          
+          reader.close();
+        }
+      }
+      if (splits.size() < MAX_SPLITS)
+      {
+        centerPanel.add(newSplitButton);
+        newSplitButton.revalidate();
+      }
+      centerPanel.revalidate();
+    }
+    catch (Exception ex)
+    {
+      JOptionPane.showMessageDialog(frame, "Error reading preset", "Darn", JOptionPane.ERROR_MESSAGE);
+    }
   }
 }
