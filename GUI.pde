@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.net.URI;
 
 public class GUI implements ActionListener
 {
@@ -35,6 +36,8 @@ public class GUI implements ActionListener
     JFrame frame = new JFrame("NitroGuy's ColorSplitter");
     frame.setSize(700, 500);
     frame.setPreferredSize(frame.getSize());
+    
+    JPanel masterPanel = new JPanel(new BorderLayout());
 
     JPanel panel = new JPanel(new BorderLayout());
 
@@ -79,15 +82,57 @@ public class GUI implements ActionListener
     doitButton.addActionListener(this);
     bottomPanel.add(doitButton);
     
-    /*
-    JLabel siteLabel = new JLabel("<html><a href=\"https://nitroguy10.github.io/\">website</a></html>");
-    bottomPanel.add(siteLabel);
-    */
     
     panel.add(bottomPanel, BorderLayout.SOUTH);
+    
+    
+    JMenuBar menuBar = new JMenuBar();
+    
+    JMenu fileMenu = new JMenu("Presets");
+    menuBar.add(fileMenu);
+    
+    JMenuItem newMenuItem = new JMenuItem("New");
+    newMenuItem.setActionCommand("new");
+    newMenuItem.addActionListener(this);
+    fileMenu.add(newMenuItem);
+    
+    fileMenu.addSeparator();
+    
+    JMenuItem loadMenuItem = new JMenuItem("Load Preset");
+    loadMenuItem.setActionCommand("load");
+    loadMenuItem.addActionListener(this);
+    fileMenu.add(loadMenuItem);
+    
+    JMenuItem saveMenuItem = new JMenuItem("Save Preset As...");
+    saveMenuItem.setActionCommand("save");
+    saveMenuItem.addActionListener(this);
+    fileMenu.add(saveMenuItem);
+    
+    fileMenu.addSeparator();
+    
+    JMenuItem defaultMenuItem = new JMenuItem("Set Preset As Default...");
+    defaultMenuItem.setActionCommand("set default");
+    defaultMenuItem.addActionListener(this);
+    fileMenu.add(defaultMenuItem);
+    
+    
+    JMenu aboutMenu = new JMenu("About");
+    menuBar.add(aboutMenu);
+    
+    JMenuItem readmeMenuItem = new JMenuItem("View Readme");
+    readmeMenuItem.setActionCommand("readme");
+    readmeMenuItem.addActionListener(this);
+    aboutMenu.add(readmeMenuItem);
+    
+    JMenuItem siteMenuItem = new JMenuItem("nitroguy10.github.io");
+    siteMenuItem.setActionCommand("site");
+    siteMenuItem.addActionListener(this);
+    aboutMenu.add(siteMenuItem);
+    
 
-
-    frame.add(panel);
+    masterPanel.add(menuBar, BorderLayout.NORTH);
+    masterPanel.add(panel, BorderLayout.CENTER);
+    frame.add(masterPanel);
     frame.pack();
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.setVisible(true);
@@ -152,6 +197,26 @@ public class GUI implements ActionListener
       }
       centerPanel.revalidate();
     }
+    else if (e.getActionCommand().equals("new"))
+    {
+      clearSettings();
+    }
+    else if (e.getActionCommand().equals("readme"))
+    {
+      try {
+         
+        Desktop.getDesktop().browse(new URI("https://github.com/NitroGuy10/ColorSplitter#readme"));
+      }
+      catch (Exception ex) {}
+    }
+    else if (e.getActionCommand().equals("site"))
+    {
+      try {
+         
+        Desktop.getDesktop().browse(new URI("https://nitroguy10.github.io/"));
+      }
+      catch (Exception ex) {}
+    }
   }
   
   public void removeSplitSetting (SplitSetting ss)
@@ -162,6 +227,21 @@ public class GUI implements ActionListener
       centerPanel.add(newSplitButton);
     }
     splits.remove(splits.indexOf(ss));
+    newSplitButton.revalidate();
+    centerPanel.revalidate();
+  }
+  
+  public void clearSettings ()
+  {
+    for (SplitSetting setting : splits)
+    {
+      centerPanel.remove(setting);
+    }
+    if (splits.size() == MAX_SPLITS)
+    {
+      centerPanel.add(newSplitButton);
+    }
+    splits.clear();
     newSplitButton.revalidate();
     centerPanel.revalidate();
   }
