@@ -6,6 +6,8 @@ import java.io.File;
 
 public class GUI implements ActionListener
 {
+  public static final int MAX_SPLITS = 20;
+  
   JLabel inputLabel;
   JLabel outputLabel;
   JLabel primaryLabel;
@@ -14,8 +16,9 @@ public class GUI implements ActionListener
   Color secondaryColor = Color.black;
   JLabel outlineLabel;
   Color outlineColor = Color.black;
-  File inputFolder;
-  File outputFolder;
+  JPanel centerPanel;
+  JButton newSplitButton;
+  
 
   GUI ()
   {
@@ -47,35 +50,14 @@ public class GUI implements ActionListener
     
     panel.add(topPanel, BorderLayout.NORTH);
     
-    JPanel centerPanel = new JPanel(new GridLayout(20, 1));
+    centerPanel = new JPanel(new GridLayout(MAX_SPLITS + 1, 1));
     JScrollPane scrollPane = new JScrollPane(centerPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     scrollPane.getVerticalScrollBar().setUnitIncrement(5);
     
-    JButton primaryButton = new JButton("Choose Primary Color");
-    primaryButton.setActionCommand("choose primary");
-    primaryButton.addActionListener(this);
-    centerPanel.add(primaryButton);
-    
-    primaryLabel = new JLabel("\u2588\u2588\u2588\u2588\u2588");
-    centerPanel.add(primaryLabel);
-    
-    
-    JButton secondaryButton = new JButton("Choose Secondary Color");
-    secondaryButton.setActionCommand("choose secondary");
-    secondaryButton.addActionListener(this);
-    centerPanel.add(secondaryButton);
-    
-    secondaryLabel = new JLabel("\u2588\u2588\u2588\u2588\u2588");
-    centerPanel.add(secondaryLabel);
-
-
-    JButton outlineButton = new JButton("Choose Outline Color");
-    outlineButton.setActionCommand("choose outline");
-    outlineButton.addActionListener(this);
-    centerPanel.add(outlineButton);
-    
-    outlineLabel = new JLabel("\u2588\u2588\u2588\u2588\u2588");
-    centerPanel.add(outlineLabel);
+    newSplitButton = new JButton(" + New Color Split + ");
+    newSplitButton.setActionCommand("new split");
+    newSplitButton.addActionListener(this);
+    centerPanel.add(newSplitButton);
     
     panel.add(scrollPane, BorderLayout.CENTER);
 
@@ -106,7 +88,7 @@ public class GUI implements ActionListener
 
 
     frame.add(panel);
-    //frame.pack();
+    frame.pack();
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.setVisible(true);
 
@@ -158,32 +140,29 @@ public class GUI implements ActionListener
         outputLabel.setText(outputFolder.getAbsolutePath());
       }
     }
-    else if (e.getActionCommand().equals("choose primary"))
+    else if (e.getActionCommand().equals("new split"))
     {
-      Color newColor = JColorChooser.showDialog(frame, "Choose Primary Color", primaryColor);
-      if (newColor != null)
+      centerPanel.remove(newSplitButton);
+      SplitSetting newSplit = new SplitSetting();
+      splits.add(newSplit);
+      centerPanel.add(newSplit);
+      if (splits.size() < MAX_SPLITS)
       {
-        primaryColor = newColor;
-        primaryLabel.setForeground(newColor);
+        centerPanel.add(newSplitButton);
       }
+      centerPanel.revalidate();
     }
-    else if (e.getActionCommand().equals("choose secondary"))
+  }
+  
+  public void removeSplitSetting (SplitSetting ss)
+  {
+    centerPanel.remove(ss);
+    if (splits.size() == MAX_SPLITS)
     {
-      Color newColor = JColorChooser.showDialog(frame, "Choose Secondary Color", secondaryColor);
-      if (newColor != null)
-      {
-        secondaryColor = newColor;
-        secondaryLabel.setForeground(newColor);
-      }
+      centerPanel.add(newSplitButton);
     }
-    else if (e.getActionCommand().equals("choose outline"))
-    {
-      Color newColor = JColorChooser.showDialog(frame, "Choose Outline Color", outlineColor);
-      if (newColor != null)
-      {
-        outlineColor = newColor;
-        outlineLabel.setForeground(newColor);
-      }
-    }
+    splits.remove(splits.indexOf(ss));
+    newSplitButton.revalidate();
+    centerPanel.revalidate();
   }
 }

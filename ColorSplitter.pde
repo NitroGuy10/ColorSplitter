@@ -1,5 +1,8 @@
-boolean ready = true;
+boolean ready = false;
 GUI gui;
+ArrayList<SplitSetting> splits;
+File inputFolder;
+File outputFolder;
 
 void setup ()
 {
@@ -8,6 +11,7 @@ void setup ()
   surface.setVisible(false);
   noLoop();
   
+  splits = new ArrayList();
   gui = new GUI();
   while (!ready)
   {
