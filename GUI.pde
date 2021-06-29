@@ -107,7 +107,7 @@ public class GUI implements ActionListener
       else
       {
         JOptionPane.showMessageDialog(frame, "Doing it!!!!!! :DDDDD", "Lesss gooooo", JOptionPane.INFORMATION_MESSAGE);
-        doit(inputFolder, outputFolder, primaryColor, secondaryColor, outlineColor);
+        doit();
       }
     }
     else if (e.getActionCommand().equals("choose input folder"))

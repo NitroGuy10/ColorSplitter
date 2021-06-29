@@ -10,7 +10,7 @@ void setup ()
   frameRate(1);
   surface.setVisible(false);
   noLoop();
-  
+
   splits = new ArrayList();
   gui = new GUI();
   while (!ready)
@@ -19,42 +19,41 @@ void setup ()
   }
 }
 
-void doit (File inputFolder, File outputFolder, Color primaryColor, Color secondaryColor, Color outlineColor)
+void doit ()
 {
   File[] inputList = inputFolder.listFiles();
   for (File inputFile : inputList)
   {
     PImage originalImage = loadImage(inputFile.getAbsolutePath());
     originalImage.loadPixels();
-    PImage primaryImage = createImage(originalImage.width, originalImage.height, ARGB);
-    PImage secondaryImage = createImage(originalImage.width, originalImage.height, ARGB);
-    PImage outlineImage = createImage(originalImage.width, originalImage.height, ARGB);
-    
-    for (int x = 0; x < originalImage.width; x++)
+
+    for (SplitSetting setting : splits)
     {
-      for (int y = 0; y < originalImage.height; y++)
+      PImage splitImage = createImage(originalImage.width, originalImage.height, ARGB);
+
+      for (int x = 0; x < originalImage.width; x++)
       {
-        if (colorColorEquals(originalImage.pixels[y*originalImage.width+x], primaryColor))
+        for (int y = 0; y < originalImage.height; y++)
         {
-          primaryImage.pixels[y*originalImage.width+x] = color(255);
-        }
-        if (colorColorEquals(originalImage.pixels[y*originalImage.width+x], secondaryColor))
-        {
-          secondaryImage.pixels[y*originalImage.width+x] = color(255);
-        }
-        if (colorColorEquals(originalImage.pixels[y*originalImage.width+x], outlineColor))
-        {
-          outlineImage.pixels[y*originalImage.width+x] = color(255);
+          if (colorColorEquals(originalImage.pixels[y*originalImage.width+x], setting.getColor()))
+          {
+            splitImage.pixels[y*originalImage.width+x] = color(255);
+          }
         }
       }
+
+      String originalName = inputFile.getName();
+      if (originalName.matches(".*_[0-9]+.*"))
+      {
+        splitImage.save(outputFolder.getAbsolutePath() + "/" + originalName.substring(0, originalName.lastIndexOf("_")) + setting.getName() + originalName.substring(originalName.lastIndexOf("_")));
+      }
+      else
+      {
+        splitImage.save(outputFolder.getAbsolutePath() + "/" + originalName + setting.getName());
+      }
     }
-    
-    String[] originalName = inputFile.getName().split("_");
-    primaryImage.save(outputFolder.getAbsolutePath() + "/" + originalName[0] + "Primary_" + originalName[1]);
-    secondaryImage.save(outputFolder.getAbsolutePath() + "/" + originalName[0] + "Secondary_" + originalName[1]);
-    outlineImage.save(outputFolder.getAbsolutePath() + "/" + originalName[0] + "Outline_" + originalName[1]);
   }
-  
+
   JOptionPane.showMessageDialog(frame, "DOOONNNEEEE!!!!1!!!11!!", "omgomgomgomg", JOptionPane.INFORMATION_MESSAGE);
 }
 
