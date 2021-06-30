@@ -1,7 +1,9 @@
 # ColorSplitter
 Split images into separate whitemasks.
 
-Made in [Processing](https://processing.org/) until I  realized I only used like 2 features in Processing that are already in pure Java so I switched to Java.
+Made in [Processing](https://processing.org/) until I realized I only used like 2 features in Processing that are already in pure Java so I switched to Java.
+
+The Processing source is now outdated and only the Java one should be used.
 
 ## Installation
 
